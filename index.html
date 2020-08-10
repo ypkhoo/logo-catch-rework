@@ -1,14 +1,174 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <style>
+        body {
+            margin: auto; 
+            padding: 0; 
+            background: #000000;
+        }
 
+        #main-container {
+            background-image: url('./assets/1x/background.png');
+            height: 100vh; 
+            max-width: 500px;
+            position: relative; 
+            background-repeat: no-repeat;
+            text-align: center;
+            display: block;
+            margin-left: auto;
+            margin-right: auto; 
+            display: flex; 
+        }
+
+        .vertical-center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+        #instruction-screen, #bonus-screen, #game-screen, #score-screen {
+            display: none; 
+        }
+
+        @font-face {
+                font-family: GOTHAMMEDIUM; 
+                src: url('./assets/Font/Gotham-Medium.otf'); 
+        }
+
+        @font-face {
+                font-family: GOTHAMBOLD; 
+                src: url('./assets/Font/GothamBold.ttf'); 
+                font-weight: bold; 
+        }
+    </style>
 </head>
 
 <body>
+    <div id="main-container">
+        <section id="welcome-screen" style="justify-content:center; align-items: center;">
+            <img src="assets/1x/1.title.png" style="width: 375px; padding: 50px 50px 50px">
+            <input type="image" src="assets/1x/1.btn-start.png" style="width: 375px;" id="start-btn">
+        </section>
 
+        <section id="instruction-screen">
+            <h1 style="color: #FFFFFF; font-family: GOTHAMBOLD;">How To Play: </h1>
+            <img src="assets/1x/2.box.png" style="width: 300px">
+            <input type="image" src="assets/1x/2.btn-continue.png" style="width: 300px" id="continue-btn">
+        </section>
+
+        <section id="bonus-screen">
+            <img src="assets/1x/3.title.png" style="width: 300px"> 
+            <img src="assets/1x/3.bonuspoint.png" style="width: 300px"> 
+            <h3 style="color: #FFFFFF; font-family: GOTHAMBOLD;">Each of this icon can get</h3>
+            <h1 style="color: #FFFFFF; font-family: GOTHAMBOLD;">10 POINTS.</h1>
+            <img src="assets/1x/3.dont-miss-out.png" style="width: 300px">
+            <input type="image" src="assets/1x/2.btn-continue.png" style="width: 300px" id="continueGame-btn">
+        </section>
+
+        <section id="game-screen">
+            <img id="good1" src="./assets/1x/2.healthyfoods-1.png" style="width: 50px">
+            <img id="good2" src="./assets/1x/2.healthyfoods-2.png" style="width: 50px">
+            <img id="good3" src="./assets/1x/2.healthyfoods-3.png" style="width: 50px">
+            <img id="bonus" src="./assets/1x/3.bonuspoint.png" style="width: 50px">
+            <img id="bad1" src="./assets/1x/2.unhealthyfood-1.png" style="width: 50px">
+            <img id="bad2" src="./assets/1x/2.unhealthyfood-2.png" style="width: 50px">
+            <img id="bad3" src="./assets/1x/2.unhealthyfood-3.png" style="width: 50px">
+            <img id="smoke" src="./assets/1x/3.gaming-smoke.png" style="width: 50px"> 
+            <canvas id="game-canvas" style="width: 400px; height: 881px"></canvas>
+            <button id="done-btn">GO TO SCORE SCREEN</button>
+        </section>
+
+        <section id="score-screen">
+            <img src="assets/1x/4.ending-score-box.png" style="width:300px" id="score-box"> 
+            <canvas id="score-canvas" style="width: 300px; height: 228.8px"></canvas>
+            <input type="image" src="assets/1x/4.btn-play-again.png" style="width:300px" id="playagain-btn"> 
+        </section>
+    </div>
 </body>
 
+<script src="./import_files/jquery.min.js" type="text/javascript"></script>
 <script>
-    
+    var scoreCanvas = document.querySelector("#score-canvas"); 
+    var goodLogo = document.getElementById("#good1"); 
+
+    $("#start-btn").click(function () {
+        $("#welcome-screen").hide(); 
+        $("#instruction-screen").show(); 
+    }); 
+
+    $("#continue-btn").click(function () {
+        $("#instruction-screen").hide(); 
+        $("#bonus-screen").show(); 
+    }); 
+
+    $("#continueGame-btn").click(function () {
+        $("#bonus-screen").hide(); 
+        $("#game-screen").show(); 
+    }); 
+
+    $("#done-btn").click(function () {
+        $("#game-screen").hide(); 
+        scoreUpdate(); 
+        $("#score-screen").show(); 
+    }); 
+
+    $("#playagain-btn").click(function () {
+        $("#score-screen").hide(); 
+        $("#welcome-screen").show(); 
+    }); 
+
+    // namespace our game
+    var LC = {
+        canvas: null, 
+        ctx: null, 
+        startingTime: 30, 
+        score: 0, 
+        logos: [], 
+
+        init: function() {
+            LC.canvas = document.querySelector("#game-canvas"); 
+            LC.ctx = LC.canvas.getContext('2d'); 
+            LC.Draw.text('SCORE: ' + score.toString(), 20, 30, 14, '#FFFFFF'); 
+            LC.Draw.text('TIME: ' +  starting.toString(), 20, 50, 14, '#FFFFFF'); 
+            LC.Draw.logo(goodLogo); 
+        }, 
+
+        // this is where we draw all the entities 
+        render: function () {
+            var i; 
+
+            LC.Draw.logo(goodLogo); 
+        }
+
+    }; 
+
+    LC.Draw = {
+        text: function (string, x, y, size, color) {
+            LC.ctx.font = 'bold ' + size + 'px Monospace'; 
+            LC.ctx.fillStyle = color; 
+            LC.ctx.fillText(string, x, y); 
+        },
+
+        logo: function (logoImg) {
+            LC.ctx.drawImage(logoImg, 30, 60); 
+        }
+    }; 
+
+    function scoreUpdate() {
+        console.log("I AM HERE");
+        var ctx = scoreCanvas.getContext("2d"); 
+        console.log("I AM HERE");
+        var base = document.getElementById("#score-box"); 
+        console.log("I AM HERE");
+
+        ctx.drawImage(base, 0, 0, 300, 228.8); 
+        console.log("I AM HERE");
+    }; 
+
+    window.addEventListener('load', LC.init, false); 
 </script>
 </html>
