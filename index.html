@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <style>
         body {
             margin: auto; 
@@ -30,7 +31,11 @@
             transform: translateY(-50%);
         }
 
-        #instruction-screen, #bonus-screen, #game-screen, #score-screen {
+        #welcome-screen, #instruction-screen, #bonus-screen, #score-screen {
+            display: none; 
+        }
+
+        #good1, #good2, #good3, #bonus, #bad1, #bad2, #bad3, #smoke, #bg {
             display: none; 
         }
 
@@ -50,23 +55,23 @@
 <body>
     <div id="main-container">
         <section id="welcome-screen" style="justify-content:center; align-items: center;">
-            <img src="assets/1x/1.title.png" style="width: 375px; padding: 50px 50px 50px">
-            <input type="image" src="assets/1x/1.btn-start.png" style="width: 375px;" id="start-btn">
+            <img src="assets/1x/1.title.png" style="width: 500px; padding: 300px 50px 200px">
+            <input type="image" src="assets/1x/1.btn-start.png" style="width: 300px;" id="start-btn">
         </section>
 
         <section id="instruction-screen">
-            <h1 style="color: #FFFFFF; font-family: GOTHAMBOLD;">How To Play: </h1>
-            <img src="assets/1x/2.box.png" style="width: 300px">
+            <h2 style="color: #FFFFFF; font-family: GOTHAMBOLD; padding: 60px 0px 50px">How To Play: </h2>
+            <img src="assets/1x/2.box.png" style="width: 400px; padding-bottom: 50px;">
             <input type="image" src="assets/1x/2.btn-continue.png" style="width: 300px" id="continue-btn">
         </section>
 
         <section id="bonus-screen">
-            <img src="assets/1x/3.title.png" style="width: 300px"> 
-            <img src="assets/1x/3.bonuspoint.png" style="width: 300px"> 
-            <h3 style="color: #FFFFFF; font-family: GOTHAMBOLD;">Each of this icon can get</h3>
-            <h1 style="color: #FFFFFF; font-family: GOTHAMBOLD;">10 POINTS.</h1>
-            <img src="assets/1x/3.dont-miss-out.png" style="width: 300px">
-            <input type="image" src="assets/1x/2.btn-continue.png" style="width: 300px" id="continueGame-btn">
+            <img src="assets/1x/3.title.png" style="width: 300px; padding: 70px 0px 50px"> 
+            <img src="assets/1x/3.bonuspoint.png" style="width: 250px; padding-bottom: 50px;"> 
+            <h4 style="color: #FFFFFF; font-family: GOTHAMBOLD;">Each of this icon can get</h4>
+            <h2 style="color: #FFFFFF; font-family: GOTHAMBOLD; padding-bottom: 15px;">10 POINTS.</h2>
+            <img src="assets/1x/3.dont-miss-out.png" style="width: 300px; padding-bottom: 60px;">
+            <input type="image" src="assets/1x/2.btn-continue.png" style="width: 300px;" id="continueGame-btn">
         </section>
 
         <section id="game-screen">
@@ -78,97 +83,483 @@
             <img id="bad2" src="./assets/1x/2.unhealthyfood-2.png" style="width: 50px">
             <img id="bad3" src="./assets/1x/2.unhealthyfood-3.png" style="width: 50px">
             <img id="smoke" src="./assets/1x/3.gaming-smoke.png" style="width: 50px"> 
-            <canvas id="game-canvas" style="width: 400px; height: 881px"></canvas>
+            <img id="bg" src="./assets/1x/background.png" style="width: 500px"> 
+            <canvas id="game-canvas"></canvas>
             <button id="done-btn">GO TO SCORE SCREEN</button>
         </section>
 
         <section id="score-screen">
-            <img src="assets/1x/4.ending-score-box.png" style="width:300px" id="score-box"> 
-            <canvas id="score-canvas" style="width: 300px; height: 228.8px"></canvas>
-            <input type="image" src="assets/1x/4.btn-play-again.png" style="width:300px" id="playagain-btn"> 
+            <img src="assets/1x/4.ending-score-box.png" style="width:300px; padding-top: 225px" id="score-box"> 
+            <canvas id="score-canvas" style="width: 300px; height: 228.797px; "></canvas>
+            <input type="image" src="assets/1x/4.btn-play-again.png" style="width:300px; padding-top: 150px" id="playagain-btn"> 
         </section>
     </div>
+
+    <script src="./import_files/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script>
+        // http://paulirish.com/2011/requestanimationframe-for-smart-animating
+        // shim layer with setTimeout fallback
+        window.requestAnimFrame = (function(){
+        return  window.requestAnimationFrame       || 
+                window.webkitRequestAnimationFrame || 
+                window.mozRequestAnimationFrame    || 
+                window.oRequestAnimationFrame      || 
+                window.msRequestAnimationFrame     || 
+                function( callback ){
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        })();
+        
+        var scoreCanvas = document.querySelector("#score-canvas"); 
+
+        $("#start-btn").click(function () {
+            $("#welcome-screen").hide(); 
+            $("#instruction-screen").show(); 
+        }); 
+
+        $("#continue-btn").click(function () {
+            $("#instruction-screen").hide(); 
+            $("#bonus-screen").show(); 
+        }); 
+
+        $("#continueGame-btn").click(function () {
+            $("#bonus-screen").hide(); 
+            $("#game-screen").show(); 
+        }); 
+
+        $("#done-btn").click(function () {
+            $("#game-screen").hide(); 
+            scoreUpdate(); 
+            $("#score-screen").show(); 
+        }); 
+
+        $("#playagain-btn").click(function () {
+            $("#score-screen").hide(); 
+            $("#welcome-screen").show(); 
+        }); 
+
+        // namespace our game
+        var LC = {
+            WIDTH: 500, 
+            HEIGHT: 981, 
+            scale: 1, 
+            // the position of the canvas in relation to the screen
+            offset: {top: 0, left: 0}, 
+            nextLogo: 100, 
+            startingTime: 3000, 
+            score: {
+                taps: 0, 
+                hit: 0, 
+                escaped: 0, 
+                accuracy: 0
+            }, 
+            entities: [], 
+            RATIO: null, 
+            currentWidth: null, 
+            currentHeight: null, 
+            canvas: null, 
+            ctx: null, 
+            
+            init: function() {
+                // the proportion of width to height
+                LC.RATIO = LC.WIDTH / LC.HEIGHT; 
+                // these will change when the screen is resized
+                LC.currentWidth = LC.WIDTH; 
+                LC.currentHeight = LC.HEIGHT; 
+                // this is our canvas element 
+                LC.canvas = document.querySelector("#game-canvas"); 
+                // setting this is important 
+                // otherwise the browser will 
+                // default to 320 x 200
+                LC.canvas.width = LC.WIDTH; 
+                LC.canvas.height = LC.HEIGHT;
+                // the canvas context enables us to 
+                // interact with the canvas api  
+                LC.ctx = LC.canvas.getContext('2d'); 
+                LC.wave = {
+                    offset: 0
+                }; 
+
+                LC.correctSound = new sound("./assets/soundFx/correct.mp3"); 
+                LC.wrongSound = new sound("./assets/soundFx/wrong.mp3");
+                // listen for clicks 
+                window.addEventListener('click', function(e) {
+                    e.preventDefault(); 
+                    LC.Input.set(e); 
+                }, false); 
+
+                // listen for touches 
+                window.addEventListener('touchstart', function(e) {
+                    e.preventDefault(); 
+                    // the event object has an array 
+                    // named touches; we just want 
+                    // the first touch 
+                    LC.Input.set(e.touches[0]); 
+                }, false); 
+                window.addEventListener('touchmove', function(e) {
+                    // we're not interested in this, 
+                    // but prevent default behaviour 
+                    // so the screen doesn't scroll or zoom 
+                    e.preventDefault(); 
+                }, false);
+                window.addEventListener('touchend', function(e) {
+                    // as above 
+                    e.preventDefault(); 
+                }, false);  
+
+                // we're ready to resize 
+                LC.resize(); 
+                LC.loop(); 
+            }, 
+
+            update: function() {
+                var i; 
+                checkCollision = false; 
+
+                // decrease our nextLogo counter
+                LC.nextLogo -= 1;
+                // if the counter is less than zero
+                if (LC.nextLogo < 0) {
+                    // put a new instance of logo into our entities array
+                    LC.entities.push(new LC.Logo());
+                    // reset the counter with a random value
+                    LC.nextLogo = (Math.random() * 100) + 100;
+                }
+
+                // spawn a new instance of Touch 
+                // if the user has tapped the screen 
+                if (LC.Input.tapped) {
+                    // keep track of taps; needed to 
+                    // calculate accuracy
+                    LC.score.taps += 1;
+                    // add a new touch
+                    LC.entities.push(new LC.Touch(LC.Input.x, LC.Input.y)); 
+                    // set tapped back to false 
+                    // to avoid spawning a new touch 
+                    // in the next cycle 
+                    LC.Input.tapped = false; 
+                    checkCollision = true;
+                }
+
+                // cycle through all entities and update as necessary 
+                for (i = 0; i < LC.entities.length; i += 1) {
+                    LC.entities[i].update(); 
+
+                    if (LC.entities[i].type === 'logo' && checkCollision) {
+                        hit = LC.collides(LC.entities[i],
+                            { x: LC.Input.x, y: LC.Input.y, r: 7 });
+                        if (hit) {
+                            LC.correctSound.play(); 
+                            // spawn an explosion
+                            for (var n = 0; n < 5; n += 1) {
+                                LC.entities.push(new LC.Particle(
+                                    LC.entities[i].x,
+                                    LC.entities[i].y,
+                                    2,
+                                    // random opacity to spice it up a bit
+                                    'rgba(255,255,255,' + Math.random() * 1 + ')'
+                                ));
+                            }
+                            LC.score.hit += 1;
+                        }
+
+                        LC.entities[i].remove = hit;
+                    }
+
+                    // delete from array if remove property
+                    // flag is set to true 
+                    if (LC.entities[i].remove) {
+                        LC.entities.splice(i, 1); 
+                    }
+                }
+
+                // calculate accuracy
+                LC.score.accuracy = (LC.score.hit / LC.score.taps) * 100;
+                LC.score.accuracy = isNaN(LC.score.accuracy) ?
+                    0 :
+                    ~~(LC.score.accuracy); // a handy way to round floats
+            }, 
+
+            // this is where we draw all the entities
+            render: function() {
+                var i; 
+                LC.Draw.rect(0, 0, LC.WIDTH, LC.HEIGHT, '#036'); 
+
+                // cycle through all entities and render to canvas 
+                for (i = 0; i < LC.entities.length; i += 1) {
+                    LC.entities[i].render(); 
+                }
+
+                LC.Draw.text('SCORE: ' + LC.score.hit, 20, 30, 14, '#fff');
+                LC.Draw.text('TIME: ' + (Math.floor(LC.startingTime/100)), 240, 30, 14, '#fff'); 
+            }, 
+
+            // the actual loop 
+            // requests animation frame, 
+            // then proceeds to update and render 
+            loop: function() {
+
+                if (LC.startingTime > 0) {
+                    requestAnimFrame( LC.loop ); 
+                    LC.update(); 
+                    LC.render(); 
+                }; 
+                LC.startingTime -= 1; 
+            }, 
+
+            resize: function() {
+                LC.currentHeight = window.innerHeight; 
+                // resize the width in proportion 
+                // to the new height
+                LC.currentWidth = LC.currentHeight * LC.RATIO; 
+
+                // this will create some extra space on the page 
+                // allowing us to scroll past the address bar, 
+                // thus hiding it. 
+                //if (LC.android || LC.ios) {
+                //    document.body.style.height = (window.innerHeight + 50) + 'px'; 
+                //}
+
+                // set the new canvas style width and height 
+                // note: our canvas is still 320 x 480, but 
+                // we're essentially scaling it with CSS 
+                LC.canvas.style.width = LC.currentWidth + 'px'; 
+                LC.canvas.style.height = LC.currentHeight + 'px'; 
+
+                LC.scale = LC.currentWidth / LC.WIDTH; 
+                LC.offset.top = LC.canvas.offsetTop; 
+                LC.offset.left = LC.canvas.offsetLeft; 
+
+                // we use a timeout here because some mobile 
+                // browsers don't fire if there is not a short delay 
+                window.setTimeout(function() {
+                    window.scrollTo(0,1); 
+                }, 1); 
+            }, 
+        }; 
+
+        LC.collides = function(a, b) {
+
+            var distance_squared = ( ((a.x - b.x) * (a.x - b.x)) + 
+                                    ((a.y - b.y) * (a.y - b.y)));
+
+            var radii_squared = (a.r + b.r) * (a.r + b.r);
+
+            if (distance_squared < radii_squared) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        LC.Draw = {
+
+            clear: function() {
+                LC.ctx.clearRect(0, 0, LC.WIDTH, LC.HEIGHT); 
+            }, 
+
+            text: function (string, x, y, size, color) {
+                LC.ctx.font = 'bold ' + size + 'px Monospace'; 
+                LC.ctx.fillStyle = color; 
+                LC.ctx.fillText(string, x, y); 
+            },
+
+            logo: function (x,y) {
+                var img = new Image(); 
+                img.src = './assets/1x/2.healthyfoods-2.png'; 
+                LC.ctx.drawImage(img, x, y, 80, 80); 
+                // var goodLogo = document.getElementById("#good1"); 
+                // LC.ctx.drawImage(goodLogo, x, y); 
+            }, 
+            
+            bg: function () {
+                var img = new Image(); 
+                img.src = './assets/1x/background.png'; 
+                LC.ctx.drawImage(img, x, y, 500, 981); 
+                // var goodLogo = document.getElementById("#good1"); 
+                // LC.ctx.drawImage(goodLogo, x, y); 
+            }, 
+
+            bg: function (x, y) {
+                var img = new Image(); 
+                img.src = './assets/1x/background.png'; 
+                LC.ctx.drawImage(x, y, img, 500, 981); 
+                // var goodLogo = document.getElementById("#good1"); 
+                // LC.ctx.drawImage(goodLogo, x, y); 
+            }, 
+
+            rect: function(x, y, w, h, col) {
+                LC.ctx.fillStyle = col;
+                LC.ctx.fillRect(x, y, w, h);
+            },
+
+            circle: function(x, y, r, col) {
+                LC.ctx.fillStyle = col;
+                LC.ctx.beginPath();
+                LC.ctx.arc(x + 5, y + 5, r, 0,  Math.PI * 2, true);
+                LC.ctx.closePath();
+                LC.ctx.fill();
+            },
+        }; 
+
+        function scoreUpdate() {
+            var ctx = scoreCanvas.getContext("2d"); 
+            var base = document.getElementById("score-box"); 
+
+            ctx.drawImage(base, 0, 0, 300, 228.797); 
+            ctx.fillText('YOUR SCORE:', 20, 50, 72, '#000000'); 
+            ctx.fillText('100', 50, 50, 72, '#000000'); 
+        }; 
+
+        function sound(src) {
+            this.sound = document.createElement("audio");
+            this.sound.src = src;
+            this.sound.setAttribute("preload", "auto");
+            this.sound.setAttribute("controls", "none");
+            this.sound.style.display = "none";
+            document.body.appendChild(this.sound);
+            this.play = function(){
+                this.sound.play();
+            }
+            this.stop = function(){
+                this.sound.pause();
+            }
+        }
+
+        LC.Input = {
+            x: 0, 
+            y: 0, 
+            tapped: false, 
+            
+            set: function(data) {
+                //var offsetTop = LC.canvas.offsetTop, 
+                //    offsetLeft = LC.canvas.offsetLeft, 
+                //    scale = LC.currentWidth / LC.WIDTH;  
+                
+                this.x = (data.pageX - LC.offset.left) / LC.scale;
+                // console.log("x = "+ this.x); 
+                // console.log("data.pageX = " + data.pageX); 
+                // console.log("LC.offset.left = " + LC.offset.left);
+                // console.log("LC.scale = " + LC.scale); 
+                this.y = (data.pageY - LC.offset.top) / LC.scale;  
+                this.tapped = true;
+            }
+        }; 
+
+        LC.Touch = function(x, y) {
+            this.type = 'touch';    // we'll need this later 
+            this.x = x;             // the x coordinate 
+            this.y = y;             // the y coordinate 
+            this.r = 5;             // the radius 
+            this.opacity = 1;       // initial opacity; the dot will fade out 
+            this.fade = 0.05;       // amount by which to fade on each game tick 
+            this.remove = false;    // flag for removing this entity. LC.update 
+                                    // will take care of this
+
+            this.update = function() {
+                // reduce the opacity accordingly 
+                this.opacity -= this.fade; 
+                // if opacity if 0 or less, flag for removal 
+                this.remove = (this.opacity < 0) ? true : false; 
+            }; 
+
+            this.render =function() {
+                LC.Draw.circle(this.x, this.y, this.r, 'rgba(255, 0, 0, '+this.opacity+')');
+            }; 
+        }; 
+
+        LC.Logo = function() {
+            this.type = 'logo'; 
+            this.r = (Math.random() * 20) + 10;
+            this.speed = (Math.random() * 3) + 1;
+
+            this.x = (Math.random() * (LC.WIDTH) - this.r);
+            this.y = (Math.random() * (LC.HEIGHT) - this.r);// LC.HEIGHT + (Math.random() * 100) + 100;
+
+            // the amount by which the bubble
+            // will move from side to side
+            this.waveSize = 5 + this.r;
+            // we need to remember the original
+            // x position for our sine wave calculation
+            this.xConstant = this.x;
+
+            this.remove = false; 
+
+            this.update = function() {
+                // a sine wave is commonly a function of time
+                var time = new Date().getTime() * 0.002;
+
+                // this.y -= this.speed;
+                // the x coord to follow a sine wave
+                // consider 
+                // this.x = this.waveSize * Math.sin(time) + this.xConstant;
+
+                // if offscreen flag for removal
+                if (this.y < -10) {
+                    LC.score.escaped += 1; // update score
+                    this.remove = true;
+                }
+            };
+
+            this.render = function() {
+                LC.Draw.logo(this.x, this.y); 
+            }; 
+        };  
+
+        LC.Particle = function (x, y, r, col) {
+
+            this.x = x;
+            this.y = y;
+            this.r = r;
+            this.col = col;
+
+            // determines whether particle will
+            // travel to the right of left
+            // 50% chance of either happening
+            this.dir = (Math.random() * 2 > 1) ? 1 : -1;
+
+            // random values so particles do no
+            // travel at the same speeds
+            this.vx = ~~(Math.random() * 4) * this.dir;
+            this.vy = ~~(Math.random() * 7);
+
+            this.remove = false;
+
+            this.update = function () {
+
+                // update coordinates
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // increase velocity so particle
+                // accelerates off screen
+                this.vx *= 0.99;
+                this.vy *= 0.99;
+
+                // adding this negative amount to the
+                // y velocity exerts an upward pull on
+                // the particle, as if drawn to the
+                // surface
+                this.vy -= 0.25;
+
+                // offscreen
+                if (this.y < 0) {
+                    this.remove = true;
+                }
+
+            };
+
+
+            this.render = function () {
+                LC.Draw.circle(this.x, this.y, this.r, this.col);
+            };
+
+        };
+
+        window.addEventListener('load', LC.init, false); 
+        window.addEventListener('resize', LC.resize, false); 
+    </script>
 </body>
-
-<script src="./import_files/jquery.min.js" type="text/javascript"></script>
-<script>
-    var scoreCanvas = document.querySelector("#score-canvas"); 
-    var goodLogo = document.getElementById("#good1"); 
-
-    $("#start-btn").click(function () {
-        $("#welcome-screen").hide(); 
-        $("#instruction-screen").show(); 
-    }); 
-
-    $("#continue-btn").click(function () {
-        $("#instruction-screen").hide(); 
-        $("#bonus-screen").show(); 
-    }); 
-
-    $("#continueGame-btn").click(function () {
-        $("#bonus-screen").hide(); 
-        $("#game-screen").show(); 
-    }); 
-
-    $("#done-btn").click(function () {
-        $("#game-screen").hide(); 
-        scoreUpdate(); 
-        $("#score-screen").show(); 
-    }); 
-
-    $("#playagain-btn").click(function () {
-        $("#score-screen").hide(); 
-        $("#welcome-screen").show(); 
-    }); 
-
-    // namespace our game
-    var LC = {
-        canvas: null, 
-        ctx: null, 
-        startingTime: 30, 
-        score: 0, 
-        logos: [], 
-
-        init: function() {
-            LC.canvas = document.querySelector("#game-canvas"); 
-            LC.ctx = LC.canvas.getContext('2d'); 
-            LC.Draw.text('SCORE: ' + score.toString(), 20, 30, 14, '#FFFFFF'); 
-            LC.Draw.text('TIME: ' +  starting.toString(), 20, 50, 14, '#FFFFFF'); 
-            LC.Draw.logo(goodLogo); 
-        }, 
-
-        // this is where we draw all the entities 
-        render: function () {
-            var i; 
-
-            LC.Draw.logo(goodLogo); 
-        }
-
-    }; 
-
-    LC.Draw = {
-        text: function (string, x, y, size, color) {
-            LC.ctx.font = 'bold ' + size + 'px Monospace'; 
-            LC.ctx.fillStyle = color; 
-            LC.ctx.fillText(string, x, y); 
-        },
-
-        logo: function (logoImg) {
-            LC.ctx.drawImage(logoImg, 30, 60); 
-        }
-    }; 
-
-    function scoreUpdate() {
-        console.log("I AM HERE");
-        var ctx = scoreCanvas.getContext("2d"); 
-        console.log("I AM HERE");
-        var base = document.getElementById("#score-box"); 
-        console.log("I AM HERE");
-
-        ctx.drawImage(base, 0, 0, 300, 228.8); 
-        console.log("I AM HERE");
-    }; 
-
-    window.addEventListener('load', LC.init, false); 
-</script>
 </html>
