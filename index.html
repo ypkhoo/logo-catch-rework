@@ -5,50 +5,75 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <style>
         body {
-            margin: auto; 
+            margin: auto;
             padding: 0; 
             background: #000000;
         }
 
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: #fff;
+        }
+        
         #main-container {
             background-image: url('./assets/1x/background.png');
             height: 100vh; 
             max-width: 500px;
-            position: relative; 
             background-repeat: no-repeat;
             text-align: center;
-            display: block;
-            margin-left: auto;
-            margin-right: auto; 
-            display: flex; 
+            /*display: block;*/ 
+            margin: 0 auto;
+            /*display: flex;*/
         }
 
-        .vertical-center {
-            margin: 0;
-            position: absolute;
+        #score-screen, #instruction-screen, #bonus-screen, #welcome-screen, #bg {
+            display: none; 
+        }
+        
+        @font-face {
+            font-family: GOTHAMMEDIUM; 
+            src: url('./assets/Font/Gotham-Medium.otf'); 
+        }
+
+        @font-face {
+            font-family: GOTHAMBOLD; 
+            src: url('./assets/Font/GothamBold.ttf'); 
+            font-weight: bold; 
+        }
+        
+        .centered {
+            max-width: 100%; 
+            position: absolute; 
+            text-align: center;
             top: 50%;
-            -ms-transform: translateY(-50%);
-            transform: translateY(-50%);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden; 
+            /*font: 45px; */
         }
 
-        #welcome-screen, #instruction-screen, #bonus-screen, #score-screen {
-            display: none; 
+        .container {
+            position: relative; 
+            text-align: center; 
+            color: white; 
+            display: inline-block; 
+        }
+        /*
+        .centered {
+            width: 100%; 
+            position: absolute;
+            
+            font-size: 45px;
+            overflow: hidden; 
         }
 
-        #good1, #good2, #good3, #bonus, #bad1, #bad2, #bad3, #smoke, #bg {
-            display: none; 
+        .container {
+            position: relative;
+            text-align: center;
+            color: white;
         }
-
-        @font-face {
-                font-family: GOTHAMMEDIUM; 
-                src: url('./assets/Font/Gotham-Medium.otf'); 
-        }
-
-        @font-face {
-                font-family: GOTHAMBOLD; 
-                src: url('./assets/Font/GothamBold.ttf'); 
-                font-weight: bold; 
-        }
+        */
     </style>
 </head>
 
@@ -61,7 +86,12 @@
 
         <section id="instruction-screen">
             <h2 style="color: #FFFFFF; font-family: GOTHAMBOLD; padding: 60px 0px 50px">How To Play: </h2>
-            <img src="assets/1x/2.box.png" style="width: 400px; padding-bottom: 50px;">
+            <div class="container">
+                <img src="assets/1x/2.box.png" style="width: 400px; padding-bottom: 50px;">
+                <p class="centered">HELP PRINCESS CHOOSE THE RIGHT FOOD. TAP THE IMAGES AS THEY POP UP ON YOUR SCREEN.</p>
+                <img class="centered" src="assets/1x/2.healthyfoods.png" style="width: 200px;">
+                <img class="centered" src="assets/1x/2.unhealthyfood.png" style="width: 200px; padding-top: 50px">
+            </div>
             <input type="image" src="assets/1x/2.btn-continue.png" style="width: 300px" id="continue-btn">
         </section>
 
@@ -75,23 +105,17 @@
         </section>
 
         <section id="game-screen">
-            <img id="good1" src="./assets/1x/2.healthyfoods-1.png" style="width: 50px">
-            <img id="good2" src="./assets/1x/2.healthyfoods-2.png" style="width: 50px">
-            <img id="good3" src="./assets/1x/2.healthyfoods-3.png" style="width: 50px">
-            <img id="bonus" src="./assets/1x/3.bonuspoint.png" style="width: 50px">
-            <img id="bad1" src="./assets/1x/2.unhealthyfood-1.png" style="width: 50px">
-            <img id="bad2" src="./assets/1x/2.unhealthyfood-2.png" style="width: 50px">
-            <img id="bad3" src="./assets/1x/2.unhealthyfood-3.png" style="width: 50px">
-            <img id="smoke" src="./assets/1x/3.gaming-smoke.png" style="width: 50px"> 
-            <img id="bg" src="./assets/1x/background.png" style="width: 500px"> 
             <canvas id="game-canvas"></canvas>
             <button id="done-btn">GO TO SCORE SCREEN</button>
         </section>
 
         <section id="score-screen">
-            <img src="assets/1x/4.ending-score-box.png" style="width:300px; padding-top: 225px" id="score-box"> 
-            <canvas id="score-canvas" style="width: 300px; height: 228.797px; "></canvas>
-            <input type="image" src="assets/1x/4.btn-play-again.png" style="width:300px; padding-top: 150px" id="playagain-btn"> 
+            <div class="container">
+                <img src='assets/1x/4.ending-score-box.png' style="width:75%; padding-top: 225px; padding-bottom: 150px; background: no-repeat; background-size: 100%;" id="score-box"> 
+                <h2 class="centered">YOUR SCORE: </h2>
+                <h1 class="centered" style="padding-top: 150px;" id="newScore"></h1>
+            </div>
+            <input type="image" src="assets/1x/4.btn-play-again.png" style="width:300px; " id="playagain-btn"> 
         </section>
     </div>
 
@@ -111,8 +135,6 @@
                     window.setTimeout(callback, 1000 / 60);
                 };
         })();
-        
-        var scoreCanvas = document.querySelector("#score-canvas"); 
 
         $("#start-btn").click(function () {
             $("#welcome-screen").hide(); 
@@ -140,6 +162,11 @@
             $("#welcome-screen").show(); 
         }); 
 
+
+        var bg = new Image(); 
+        bg.src = './assets/1x/2.healthyfoods-1.png'; 
+        // LC.Draw.bg(500, 981, bg); 
+
         // namespace our game
         var LC = {
             WIDTH: 500, 
@@ -155,6 +182,7 @@
                 escaped: 0, 
                 accuracy: 0
             }, 
+            logos: [], 
             entities: [], 
             RATIO: null, 
             currentWidth: null, 
@@ -181,6 +209,23 @@
                 LC.wave = {
                     offset: 0
                 }; 
+
+                var good1 = new Image(); 
+                good1.src = './assets/1x/2.healthyfoods-1.png'; 
+                var good2 = new Image(); 
+                good2.src = './assets/1x/2.healthyfoods-2.png'; 
+                var good3 = new Image(); 
+                good3.src = './assets/1x/2.healthyfoods-3.png'; 
+                var bonus = new Image(); 
+                bonus.src = './assets/1x/3.bonuspoint.png'; 
+                var bad1 = new Image(); 
+                bad1.src = './assets/1x/2.unhealthyfood-1.png'; 
+                var bad2 = new Image(); 
+                bad2.src = './assets/1x/2.unhealthyfood-2.png'; 
+                var bad3 = new Image(); 
+                bad3.src = './assets/1x/2.unhealthyfood-3.png'; 
+
+                logos = [good1, good2, good3, bonus, bad1, bad2, bad3]; 
 
                 LC.correctSound = new sound("./assets/soundFx/correct.mp3"); 
                 LC.wrongSound = new sound("./assets/soundFx/wrong.mp3");
@@ -249,9 +294,19 @@
 
                     if (LC.entities[i].type === 'logo' && checkCollision) {
                         hit = LC.collides(LC.entities[i],
-                            { x: LC.Input.x, y: LC.Input.y, r: 7 });
+                            { x: LC.Input.x, y: LC.Input.y, r: 10 });
                         if (hit) {
-                            LC.correctSound.play(); 
+                            if (LC.entities[i].imgIndex < 4) {
+                                LC.correctSound.play(); 
+                                LC.score.hit += 5; 
+                                if (LC.entities[i].imgIndex == 3) {
+                                    LC.score.hit += 5; 
+                                }
+                            } 
+                            else {
+                                LC.wrongSound.play(); 
+                                LC.score.hit -= 5; 
+                            }
                             // spawn an explosion
                             for (var n = 0; n < 5; n += 1) {
                                 LC.entities.push(new LC.Particle(
@@ -262,7 +317,6 @@
                                     'rgba(255,255,255,' + Math.random() * 1 + ')'
                                 ));
                             }
-                            LC.score.hit += 1;
                         }
 
                         LC.entities[i].remove = hit;
@@ -274,12 +328,6 @@
                         LC.entities.splice(i, 1); 
                     }
                 }
-
-                // calculate accuracy
-                LC.score.accuracy = (LC.score.hit / LC.score.taps) * 100;
-                LC.score.accuracy = isNaN(LC.score.accuracy) ?
-                    0 :
-                    ~~(LC.score.accuracy); // a handy way to round floats
             }, 
 
             // this is where we draw all the entities
@@ -305,8 +353,13 @@
                     requestAnimFrame( LC.loop ); 
                     LC.update(); 
                     LC.render(); 
-                }; 
-                LC.startingTime -= 1; 
+                    LC.startingTime -= 1; 
+                }
+                else {  
+                    scoreUpdate(); 
+                    $("#game-screen").hide(); 
+                    $("#score-screen").show(); 
+                }
             }, 
 
             resize: function() {
@@ -330,7 +383,9 @@
 
                 LC.scale = LC.currentWidth / LC.WIDTH; 
                 LC.offset.top = LC.canvas.offsetTop; 
-                LC.offset.left = LC.canvas.offsetLeft; 
+                var testDiv = document.getElementById("main-container");
+                LC.offset.left = testDiv.offsetLeft;
+                // LC.offset.left = LC.canvas.offsetLeft; 
 
                 // we use a timeout here because some mobile 
                 // browsers don't fire if there is not a short delay 
@@ -366,9 +421,7 @@
                 LC.ctx.fillText(string, x, y); 
             },
 
-            logo: function (x,y) {
-                var img = new Image(); 
-                img.src = './assets/1x/2.healthyfoods-2.png'; 
+            logo: function (x,y,img) {
                 LC.ctx.drawImage(img, x, y, 80, 80); 
                 // var goodLogo = document.getElementById("#good1"); 
                 // LC.ctx.drawImage(goodLogo, x, y); 
@@ -405,12 +458,7 @@
         }; 
 
         function scoreUpdate() {
-            var ctx = scoreCanvas.getContext("2d"); 
-            var base = document.getElementById("score-box"); 
-
-            ctx.drawImage(base, 0, 0, 300, 228.797); 
-            ctx.fillText('YOUR SCORE:', 20, 50, 72, '#000000'); 
-            ctx.fillText('100', 50, 50, 72, '#000000'); 
+            document.getElementById("newScore").innerHTML = LC.score.hit; 
         }; 
 
         function sound(src) {
@@ -502,9 +550,13 @@
                     this.remove = true;
                 }
             };
+            
+            var imgIndex = Math.floor(Math.random() * logos.length); 
+            this.imgIndex = imgIndex; 
+            var tmpImg = logos[imgIndex];  
 
             this.render = function() {
-                LC.Draw.logo(this.x, this.y); 
+                LC.Draw.logo(this.x, this.y, tmpImg); 
             }; 
         };  
 
