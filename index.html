@@ -7,24 +7,23 @@
         body {
             margin: auto;
             padding: 0; 
-            background: #000000;
         }
 
         canvas {
             display: block;
             margin: 0 auto;
-            background: #fff;
+            /*background: #fff;*/
         }
         
         #main-container {
-            background-image: url('./assets/1x/background.png');
             height: 100vh; 
             max-width: 500px;
-            background-repeat: no-repeat;
             text-align: center;
             /*display: block;*/ 
             margin: 0 auto;
             /*display: flex;*/
+            background: url('./assets/1x/background.png') no-repeat fixed center;
+            background-size: cover;
         }
 
         #score-screen, #instruction-screen, #bonus-screen, #game-screen, #bg {
@@ -143,8 +142,8 @@
 
         $("#continueGame-btn").click(function () {
             $("#bonus-screen").hide(); 
-            window.addEventListener('load', LC.init, false); 
-            window.addEventListener('resize', LC.resize, false); 
+            LC.init();
+            LC.resize();  
             $("#game-screen").show(); 
         }); 
 
@@ -186,7 +185,46 @@
             currentHeight: null, 
             canvas: null, 
             ctx: null, 
+            /**
+            preventDefaultInput: function(e) {
+                e.preventDefault(); 
+                LC.Input.set(e); 
+            }, 
+
+            preventDefaultInputForTouchStart: function(e) {
+                e.preventDefault(); 
+                LC.Input.set(e.touches[0]); 
+            }, 
             
+            configureInput: function(instruction) {
+                if (instruction == "start") {
+                    // listen for clicks 
+                    window.addEventListener('click', LC.preventDefaultInput('click')); 
+
+                    // listen for touches 
+                    window.addEventListener('touchstart', LC.preventDefaultInputForTouchStart('touchstart')); 
+                    window.addEventListener('touchmove', LC.preventDefaultInput('touchmove'));
+                    window.addEventListener('touchend', LC.preventDefaultInput('touchend'));  
+                } else {
+                    // listen for clicks 
+                    window.removeEventListener('click', LC.preventDefaultInput(e)); 
+
+                    // listen for touches 
+                    window.removeEventListener('touchstart', LC.preventDefaultInputForTouchStart(e)); 
+                    window.removeEventListener('touchmove', LC.preventDefaultInput(e));
+                    window.removeEventListener('touchend', LC.preventDefaultInput(e));  
+                }
+            },
+            **/
+
+            configureInput: function(instruction) {
+                window.removeEventListener('click', LC.preventDefaultInput(e)); 
+                // listen for touches 
+                window.removeEventListener('touchstart', LC.preventDefaultInputForTouchStart(e)); 
+                window.removeEventListener('touchmove', LC.preventDefaultInput(e));
+                window.removeEventListener('touchend', LC.preventDefaultInput(e));  
+            },
+
             init: function() {
                 // the proportion of width to height
                 LC.RATIO = LC.WIDTH / LC.HEIGHT; 
@@ -226,30 +264,36 @@
 
                 LC.correctSound = new sound("./assets/soundFx/correct.mp3"); 
                 LC.wrongSound = new sound("./assets/soundFx/wrong.mp3");
-                // listen for clicks 
-                window.addEventListener('click', function(e) {
-                    e.preventDefault(); 
-                    LC.Input.set(e); 
-                }, false); 
-
-                // listen for touches 
-                window.addEventListener('touchstart', function(e) {
-                    e.preventDefault(); 
-                    // the event object has an array 
-                    // named touches; we just want 
-                    // the first touch 
-                    LC.Input.set(e.touches[0]); 
-                }, false); 
-                window.addEventListener('touchmove', function(e) {
-                    // we're not interested in this, 
-                    // but prevent default behaviour 
-                    // so the screen doesn't scroll or zoom 
-                    e.preventDefault(); 
+                
+                // listen for clicks
+                window.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    LC.Input.set(e);
                 }, false);
-                window.addEventListener('touchend', function(e) {
-                    // as above 
-                    e.preventDefault(); 
-                }, false);  
+
+                // listen for touches
+                window.addEventListener('touchstart', function (e) {
+                    console.log(e); 
+                    e.preventDefault();
+                    // the event object has an array
+                    // called touches, we just want
+                    // the first touch
+                    LC.Input.set(e.touches[0]);
+                }, false);
+                window.addEventListener('touchmove', function (e) {
+                    // we're not interested in this
+                    // but prevent default behaviour
+                    // so the screen doesn't scroll
+                    // or zoom
+                    e.preventDefault();
+                }, false);
+                window.addEventListener('touchend', function (e) {
+                    // as above
+                    e.preventDefault();
+                }, false);
+                
+
+                // LC.configureInput("start"); 
 
                 // we're ready to resize 
                 LC.resize(); 
@@ -606,6 +650,10 @@
             };
 
         };
+
+
+        // window.addEventListener('load', LC.init, false); 
+        window.addEventListener('resize', LC.resize, false); 
     </script>
 </body>
 </html>
