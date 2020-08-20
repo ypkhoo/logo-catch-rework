@@ -130,19 +130,24 @@
         })(); 
 
         $("#start-btn").click(function () {
+            console.log("Start"); 
             $("#welcome-screen").hide(); 
             $("#instruction-screen").show(); 
         }); 
 
         $("#continue-btn").click(function () {
+            console.log("CONTINUE"); 
             $("#instruction-screen").hide(); 
             $("#bonus-screen").show(); 
         }); 
 
         $("#continueGame-btn").click(function () {
             $("#bonus-screen").hide(); 
+            console.log("CONTINUE GAME"); 
             LC.init();
+            console.log("INIT DONE"); 
             LC.resize();  
+            console.log("RESIZE DONE"); 
             $("#game-screen").show(); 
         }); 
 
@@ -225,8 +230,8 @@
                 // setting this is important 
                 // otherwise the browser will 
                 // default to 320 x 200
-                LC.canvas.width = LC.WIDTH-40; 
-                LC.canvas.height = LC.HEIGHT-100;
+                LC.canvas.width = LC.WIDTH; 
+                LC.canvas.height = LC.HEIGHT;
                 // the canvas context enables us to 
                 // interact with the canvas api  
                 LC.ctx = LC.canvas.getContext('2d'); 
@@ -400,6 +405,7 @@
                     $("#game-screen").hide(); 
                     scoreUpdate(); 
                     $("#score-screen").show(); 
+                    LC.init(); 
                 }
             }, 
             

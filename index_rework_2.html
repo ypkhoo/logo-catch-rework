@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="import_files/bootstrap.css">
+    <style>
+
+        .container {
+            background-image: url("./assets/1x/background.png");
+            background-size: cover; 
+            font-family: GOTHAMBOLD;
+        }
+
+        @font-face {
+            font-family: GOTHAMMEDIUM; 
+            src: url('./assets/Font/Gotham-Medium.otf'); 
+        }
+
+        @font-face {
+            font-family: GOTHAMBOLD; 
+            src: url('./assets/Font/GothamBold.ttf'); 
+            font-weight: bold; 
+        }
+
+        #score-box {
+            background-image: url("./assets/1x/4.ending-score-box.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            min-height: 206px;  
+        }
+
+        #game-canvas {
+            margin: auto !important; 
+        }
+
+    </style>
+</head>
+<body class="text-white">
+    <div class="container col-lg-6 col-md-6 col-sm-12 col-xs-12 vh-100 text-center d-flex align-items-center justify-content-center" id="main-container">
+        <div id="welcome-screen" class="">
+            <div class="p-5">
+                <img src="assets/1x/1.title.png" class="img-fluid col-12 ">
+            </div>
+            <div>
+                <input type="image" src="assets/1x/1.btn-start.png" id="start-btn" class="img-fluid col-8 m-5">
+            </div>
+        </div>
+
+        <div id="instruction-screen" class="d-none ">
+            <h2 class="pt-3">How To Play:</h2>
+            <img src="assets/1x/2.instruction.png" class="img-fluid px-5">
+            <input type="image" src="assets/1x/2.btn-continue.png" id="continue-btn" class="img-fluid col-8 m-5">
+        </div>
+
+        <div id="bonus-screen" class="d-none">
+            <img src="assets/1x/3.title.png" class="img-fluid col-10"> 
+            <img src="assets/1x/3.bonuspoint.png" class="img-fluid p-5 col-10"> 
+            <h2>Each of this icon can get</h2>
+            <h1 class="font-weight-bold">10 POINTS.</h1>
+            <img src="assets/1x/3.dont-miss-out.png" class="img-fluid col-10 p-4">
+            <input type="image" src="assets/1x/2.btn-continue.png" class="img-fluid col-8 m-5" id="continueGame-btn">
+        </div>
+
+        <div id="game-screen" class="d-none">
+            <div class="row justify-content-between">
+                <div class="d-flex col-4">
+                    <p>SCORE:&nbsp</p>
+                    <p id="scoreField"></p>
+                </div>
+                <div class="d-flex col-4">
+                    <p>TIME:&nbsp</p> 
+                    <p id="timeField"></p>
+                </div>
+            </div>
+            <div class="row">
+                <canvas id="game-canvas" class="w-100 h-100"></canvas>
+            </div>
+            <div class="row">JUST TO NOT LET CANVAS OVERFLOW</div>
+        </div>
+
+        <div id="score-screen" class="d-none">
+            <div id="score-box" class="col-8 mx-auto d-flex flex-column justify-content-center align-items-center">
+                <div>
+                    <p class="col-12">YOUR SCORE: </p>
+                </div>
+                <div>
+                    <p id="finalScore" class="m-auto">100</p>
+                </div>
+            </div>
+            <div>
+                <input type="image" src="assets/1x/4.btn-play-again.png" id="playagain-btn" class="img-fluid col-8 m-5"> 
+            </div>
+        </div>
+    </div>
+
+<script src="./import_files/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="./import_files/bootstrap.bundle.js" type="text/javascript"></script>    
+<script>
+    // http://paulirish.com/2011/requestanimationframe-for-smart-animating
+    // shim layer with setTimeout fallback
+    window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       || 
+            window.webkitRequestAnimationFrame || 
+            window.mozRequestAnimationFrame    || 
+            window.oRequestAnimationFrame      || 
+            window.msRequestAnimationFrame     || 
+            function( callback ){
+                window.setTimeout(callback, 1000 / 60);
+            }; 
+    })(); 
+    
+    $("#start-btn").click(function () {
+            $("#welcome-screen").addClass('d-none'); 
+            $("#instruction-screen").removeClass('d-none'); 
+    }); 
+
+    $("#continue-btn").click(function () {
+            $("#instruction-screen").addClass('d-none'); 
+            $("#bonus-screen").removeClass('d-none'); 
+    }); 
+
+    $("#continueGame-btn").click(function () {
+            $("#bonus-screen").addClass('d-none'); 
+            $("#game-screen").removeClass('d-none'); 
+            LOCAT.init();
+    }); 
+
+    $("#playagain-btn").click(function () {
+            $("#score-screen").addClass('d-none'); 
+            $("#welcome-screen").removeClass('d-none'); 
+    }); 
+
+    var LOCAT = {
+        WIDTH: 320, 
+        HEIGHT: 480, 
+        RATIO: null, 
+        canvas: null,  
+        ctx: null,
+        scale: 1, 
+        currentWidth: null, 
+        currentHeight: null, 
+        startingTime: null, 
+        score: {
+            hit: null, 
+        }, 
+        logos: [], 
+        entities: [], 
+        offset: {top: 0, left: 0}, 
+        
+        Input: {
+            x: 0, 
+            y: 0, 
+            tapped: false, 
+
+            set: function(data) {
+                //console.log("this.x before: "+this.x); 
+                //console.log("data.pageX: " + data.pageX); 
+                //console.log("LOCAT.offset.left: " + LOCAT.offset.left); 
+                this.x = (data.pageX - LOCAT.offset.left) / LOCAT.scale; 
+                this.y = (data.pageY - LOCAT.offset.top) / LOCAT.scale;
+                //this.x = data.pageX; 
+                console.log(this.x); 
+                //this.y = data.pageY; 
+                console.log(this.y);
+                console.log("scale: " + LOCAT.scale);
+                //console.log(this.x); 
+                // console.log(this.y);
+                //console.log(data.pageY);
+                //console.log(LOCAT.offset.top);
+                this.tapped = true; 
+            }
+        }, 
+        
+        init: function() {
+            LOCAT.RATIO = LOCAT.WIDTH / LOCAT.HEIGHT; 
+            LOCAT.currentWidth = LOCAT.WIDTH; 
+            LOCAT.currentHeight = LOCAT.HEIGHT; 
+            LOCAT.canvas = document.querySelector("#game-canvas"); 
+            LOCAT.canvas.width = LOCAT.WIDTH; 
+            LOCAT.canvas.height = LOCAT.HEIGHT; 
+            LOCAT.ctx = LOCAT.canvas.getContext('2d'); 
+            LOCAT.initializeScore(); 
+            LOCAT.initializeTime(); 
+            var good1 = new Image(); 
+            good1.src = './assets/1x/2.healthyfoods-1.png'; 
+            var good2 = new Image(); 
+            good2.src = './assets/1x/2.healthyfoods-2.png'; 
+            var good3 = new Image(); 
+            good3.src = './assets/1x/2.healthyfoods-3.png'; 
+            var bonus = new Image(); 
+            bonus.src = './assets/1x/3.bonuspoint.png'; 
+            var bad1 = new Image(); 
+            bad1.src = './assets/1x/2.unhealthyfood-1.png'; 
+            var bad2 = new Image(); 
+            bad2.src = './assets/1x/2.unhealthyfood-2.png'; 
+            var bad3 = new Image(); 
+            bad3.src = './assets/1x/2.unhealthyfood-3.png'; 
+
+            logos = [good1, good2, good3, bonus, bad1, bad2, bad3]; 
+
+            // LOCAT.correctSound = new sound("./assets/soundFx/correct.mp3"); 
+            // LOCAT.wrongSound = new sound("./assets/soundFx/wrong.mp3");
+
+            // listen for clicks
+            window.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    LOCAT.Input.set(e);
+                }, false);
+
+            // listen for touches
+            window.addEventListener('touchstart', function (e) {
+                // console.log(e); 
+                // e.preventDefault();
+                // the event object has an array
+                // called touches, we just want
+                // the first touch
+                LOCAT.Input.set(e.touches[0]);
+            }, false);
+            window.addEventListener('touchmove', function (e) {
+                // we're not interested in this
+                // but prevent default behaviour
+                // so the screen doesn't scroll
+                // or zoom
+                // e.preventDefault();
+            }, false);
+            window.addEventListener('touchend', function (e) {
+                // as above
+                // e.preventDefault();
+            }, false);
+            
+            LOCAT.resize(); 
+            LOCAT.loop(); 
+        }, 
+
+        resize: function() {
+            LOCAT.currentHeight = window.innerHeight; 
+            // console.log("window.innerHeight: " + window.innerHeight); 
+            LOCAT.currentWidth = LOCAT.currentHeight * LOCAT.RATIO; 
+            // console.log("window.innerWidth: " + window.innerWidth); 
+            LOCAT.canvas.style.height = (LOCAT.currentHeight-50)+'px'; 
+            // console.log("LOCAT.canvas.style.height: " + LOCAT.canvas.style.height); 
+            LOCAT.canvas.style.width = (LOCAT.currentWidth-50)+'px'; 
+            // console.log("LOCAT.canvas.style.height: " + LOCAT.canvas.style.width); 
+            // LOCAT.canvas.style.height = '300px'; 
+            //LOCAT.canvas.style.width = '300px'; 
+
+            // LOCAT.scale = (LOCAT.currentWidth-50) / LOCAT.currentWidth; 
+            // console.log("LOCAT.scale in resize: " + LOCAT.scale)
+            // console.log(LOCAT.offset.top);
+            LOCAT.offset.top = LOCAT.canvas.offsetTop; 
+            // console.log(LOCAT.offset.top);
+            var container = document.getElementById("main-container");
+            LOCAT.offset.left = container.offsetLeft;   
+        }, 
+
+        updateScoreField: function() {
+            document.getElementById("scoreField").innerHTML = LOCAT.score.hit; 
+        }, 
+
+        updateTimeField: function() {
+            document.getElementById("timeField").innerHTML = Math.ceil(LOCAT.startingTime/1000); 
+        }, 
+
+        initializeScore: function() {
+            LOCAT.score.hit = 0; 
+        }, 
+
+        initializeTime: function() {
+            LOCAT.startingTime = 30000; 
+        }, 
+
+        update: function() {
+            var i; 
+            checkCollision = false; 
+            
+            LOCAT.nextLogo -= 1; 
+            if (LOCAT.nextLogo < 0) {
+                var spawnCount = Math.ceil(Math.random() * 3); 
+                for (j = 0; j < spawnCount; j++) {
+                    // put a new instance of logo into our entities array 
+                    LOCAT.entities.push(new LOCAT.Logo()); 
+                }
+                LOCAT.nextLogo = (Math.random() * 100) + 100; 
+            }
+
+            if (LOCAT.Input.tapped) {
+                LOCAT.entities.push(new LOCAT.Touch(LOCAT.Input.x, LOCAT.Input.y)); 
+                LOCAT.Input.tapped = false; 
+                checkCollision = true; 
+            }
+
+            for (i = 0; i < LOCAT.entities.length; i++) {
+                LOCAT.entities[i].update(); 
+
+                if (LOCAT.entities[i].type === 'logo') {
+                    LOCAT.entities[i].elapsedTime += (1000/60)/1000; 
+                }
+
+                if (LOCAT.entities[i].type === 'logo' && checkCollision) {
+                    hit = LOCAT.collides(LOCAT.entities[i], 
+                          {x: LOCAT.Input.x, y: LOCAT.Input.y, r:10}); 
+                    if (hit) {
+                        if (LOCAT.entities[i].imgIndex < 4) {
+                            // LOCAT.correctSound.play(); 
+                            LOCAT.score.hit += 5; 
+                            if (LOCAT.entities[i].imgIndex == 3) {
+                                LOCAT.score.hit += 5; 
+                            }
+                        } else {
+                            // LOCAT.wrongSound.play(); 
+                            LOCAT.score.hit -= 5; 
+                        }
+                        // spawn an explosion
+                        for (var n = 0; n < 5; n++) {
+                            LOCAT.entities.push(new LOCAT.Particle(
+                                LOCAT.entities[i].x, 
+                                LOCAT.entities[i].y, 
+                                2, 
+                                'rgba(255,255,255,' + Math.random() * 1 + ')'
+                            )); 
+                        }
+                    }
+                    LOCAT.entities[i].remove = hit; 
+                }
+                // delete from array if remove property 
+                // flag is set to true 
+                if (LOCAT.entities[i].remove) {
+                    LOCAT.entities.splice(i, 1); 
+                }
+            }
+        }, 
+
+        render: function() {
+            var i; 
+            LOCAT.Draw.clear(); 
+
+            // cycle through all entities and render to canvas 
+            for (i=0; i < LOCAT.entities.length; i++) {
+                LOCAT.entities[i].render(); 
+            }
+
+            LOCAT.updateScoreField(); 
+            LOCAT.updateTimeField(); 
+        }, 
+
+        loop: function() {
+            if (LOCAT.startingTime <= 0) {
+                cancelAnimationFrame(stopId); 
+                $("#game-screen").addClass('d-none'); 
+                finalScoreUpdate(); 
+                $("#score-screen").removeClass('d-none'); 
+                LOCAT.initializeScore(); 
+                LOCAT.initializeTime(); 
+            } else {
+                stopId = requestAnimFrame(LOCAT.loop); 
+                LOCAT.update(); 
+                LOCAT.render(); 
+                // LOCAT.startingTime -= 1000/60; 
+            }
+        }, 
+
+        Draw: {
+            logo: function (x, y, img) {
+                LOCAT.ctx.drawImage(img, x, y, 80, 80); 
+            }, 
+
+            clear: function() {
+                LOCAT.ctx.clearRect(0, 0, LOCAT.currentWidth, LOCAT.currentHeight); 
+            }, 
+
+            circle: function(x, y, r, col) {
+                LOCAT.ctx.fillStyle = col;
+                LOCAT.ctx.beginPath();
+                LOCAT.ctx.arc(x + 5, y + 5, r, 0,  Math.PI * 2, true);
+                LOCAT.ctx.closePath();
+                LOCAT.ctx.fill();
+            },
+        }, 
+
+        collides: function(a, b) {
+            var distance_squared = (((a.x - b.x) * (a.x - b.x)) + 
+                                    ((a.y - b.y) * (a.y - b.y))); 
+            var radii_squared = (a.r + b.r) * (a.r + b.r); 
+            if (distance_squared < radii_squared) {
+                return true; 
+            } else {
+                return false; 
+            }
+        }, 
+    };
+
+    LOCAT.Touch = function(x, y) {
+        this.type = 'touch'; 
+        this.x = x; 
+        this.y = y; 
+        this.r = 5; 
+        this.opacity = 1; 
+        this.fade = 0.05; 
+        // this.remove = false; 
+
+        this.update = function() {
+            this.opacity -= this.fade; 
+            this.remove = (this.opacity < 0) ? true : false; 
+        }; 
+        
+        this.render = function() {
+            LOCAT.Draw.circle(this.x, this.y, this.r, 'rgba(255, 0, 0, '+this.opacity+')');
+        }; 
+    }; 
+
+    LOCAT.Logo = function() {
+        this.type = 'logo'; 
+        this.r = 40; 
+        this.elapsedTime = 0; 
+
+        //this.x = Math.random() * (LOCAT.WIDTH); // (Math.random() * (LOCAT.WIDTH) - this.r); 
+        //this.y = Math.random() * (LOCAT.HEIGHT); // (Math.random() * (LOCAT.HEIGHT) - this.r); 
+
+        this.x = (Math.random() * (LOCAT.WIDTH) - this.r); 
+        this.y = (Math.random() * (LOCAT.HEIGHT) - this.r); 
+
+
+        this.remove = false; 
+
+        this.update = function() {
+            if (this.elapsedTime >= 2) {
+                this.remove = true; 
+            }
+        }; 
+
+        var imgIndex = Math.floor(Math.random() * logos.length); 
+        this.imgIndex = imgIndex; 
+        var tmpImg = logos[imgIndex]; 
+
+        this.render = function() {
+            LOCAT.Draw.logo(this.x, this.y, tmpImg); 
+        }; 
+    }; 
+
+    LOCAT.Particle = function (x, y, r, col) {
+
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.col = col;
+
+        // determines whether particle will
+        // travel to the right of left
+        // 50% chance of either happening
+        this.dir = (Math.random() * 2 > 1) ? 1 : -1;
+
+        // random values so particles do no
+        // travel at the same speeds
+        this.vx = ~~(Math.random() * 4) * this.dir;
+        this.vy = ~~(Math.random() * 7);
+
+        this.remove = false;
+
+        this.update = function () {
+
+            // update coordinates
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // increase velocity so particle
+            // accelerates off screen
+            this.vx *= 0.99;
+            this.vy *= 0.99;
+
+            // adding this negative amount to the
+            // y velocity exerts an upward pull on
+            // the particle, as if drawn to the
+            // surface
+            this.vy -= 0.25;
+
+            // offscreen
+            if (this.y < 0) {
+                this.remove = true;
+            }
+
+        };
+
+
+        this.render = function () {
+            LOCAT.Draw.circle(this.x, this.y, this.r, this.col);
+        };
+
+    };
+
+    function finalScoreUpdate() {
+        document.getElementById("finalScore").innerHTML = LOCAT.score.hit; 
+        var score = LOCAT.score.hit; 
+        /*
+        $.ajax({
+            url: "populateData.php", 
+            type: "POST", 
+            data: {score: score}, 
+            error: function(err) {
+                console.error(err); 
+            }, 
+            success: function(exist) {
+                $("#email-screen").hide(); 
+                console.log("Data: " + exist); 
+            }
+        });
+        */ 
+    }; 
+
+</script>
+</body>
+</html>
