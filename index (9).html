@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, 
-    user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="stylesheet" href="import_files/bootstrap.css">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
     <style>
         body {
@@ -13,28 +10,27 @@
             padding: 0; 
         }
 
-        .container {
-            background-image: url("./assets/1x/background.png");
-            background-size: cover; 
-            font-family: GOTHAMBOLD; 
-        }
-
-        #main-container {
-            height: 100vh;   
-        }
-
         canvas {
-            display: block; 
-            margin: 0px auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        #main-container {
+            height: 100vh; 
+            max-width: 500px;
+            text-align: center;
+            margin: 0 auto;
+            background: url('./assets/1x/background.png') no-repeat fixed center;
+            background-size: cover;
         }
 
-        .container #score-box {
-            background-image: url("./assets/1x/4.ending-score-box.png"); 
-            background-size: contain;
-            background-position: center;   
-            background-repeat: no-repeat;
-            min-height: 206px; 
-            height: auto;
+        #score-screen, #instruction-screen, #bonus-screen, #game-screen {
+            display: none; 
+        }
+        
+        @font-face {
+            font-family: GOTHAMMEDIUM; 
+            src: url('./assets/Font/Gotham-Medium.otf'); 
         }
 
         @font-face {
@@ -42,85 +38,83 @@
             src: url('./assets/Font/GothamBold.ttf'); 
             font-weight: bold; 
         }
+        
+        .centered {
+            max-width: 100%; 
+            position: absolute; 
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden; 
+            /*font: 45px; */
+        }
+
+        .container {
+            position: relative; 
+            text-align: center; 
+            color: white; 
+            display: inline-block; 
+        }
+        /*
+        .centered {
+            width: 100%; 
+            position: absolute;
+            
+            font-size: 45px;
+            overflow: hidden; 
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+        */
     </style>
 </head>
 
 <body>
-    <div id="main-container" class="container p-0 col-lg-4 col-md-6 col-sm-12 col-xs-12 text-white text-center d-flex align-items-center justify-content-center">
-        <div id="welcome-screen" class="">
-            <div class="">
-                <img src="assets/1x/1.title.png" class="img-fluid col-12 my-5">
-            </div>
-            <div class="">
-                <input type="image" src="assets/1x/1.btn-start.png" id="start-btn" class="img-fluid col-8 m-5">
-            </div>
-        </div>
-
-        <div id="instruction-screen" class="d-none">
-            <div class="">
-                <h3>How To Play: </h3>
-            </div>
-            <div class="my-4">
-                <img src="assets/1x/2.instruction.png" class="img-fluid col-12"></div>
-            <div class="">
-                <input type="image" src="assets/1x/2.btn-continue.png" id="continue-btn" class="img-fluid col-8">
-            </div>
-        </div>
-
-        <div id="bonus-screen" class="d-none">
-            <div class="">
-                <img src="assets/1x/3.title.png" class="img-fluid col-10"> 
-            </div>
-            <div class="my-5">
-                <img src="assets/1x/3.bonuspoint.png" class="img-fluid col-9"> 
-            </div>
-            <div class="mt-2">
-                <h4>Each of this icon can get</h4>
-            </div>
-            <div class="mb-3">
-                <h2>10 POINTS.</h2>
-            </div>
-            <div class="">
-                <img src="assets/1x/3.dont-miss-out.png" class="img-fluid col-11">
-            </div>
-            <div class="my-5">
-                <input type="image" src="assets/1x/2.btn-continue.png" id="continueGame-btn" class="img-fluid col-8">
-            </div>
-        </div>
-
-        <div id="game-screen" class="d-none">
-            <div class="row justify-content-between fixed-top w-100" id="score-time-field">
-                <div class="d-flex col-4">
-                    <p>SCORE:&nbsp</p>
-                    <p id="scoreField"></p> 
-                </div>
-                <div class="d-flex col-4">
-                    <p>TIME:&nbsp</p> 
-                    <p id="timeField"></p>
-                </div>
-            </div>
-            <div class="">
-                <canvas id="game-canvas"></canvas>
-            </div>
-        </div>
-
-        <div id="score-screen" class="d-none">
-            <div id="score-box" class="container d-flex flex-column justify-content-center">
-                <div>
-                    <h3>YOUR SCORE: </h3>
-                </div>
-                <div>
-                    <h3 id="finalScore" class="">00</h3>
-                </div>
-            </div>
+    <div id="main-container" class="p-0">
+        <section id="welcome-screen" style="justify-content:center; align-items: center;">
             <div>
-                <input type="image" src="assets/1x/4.btn-play-again.png" id="playagain-btn" class="img-fluid col-8 m-5"> 
+                <img src="assets/1x/1.title.png" style="width: 100%; padding: 300px 50px 150px">
+                <input type="image" src="assets/1x/1.btn-start.png" style="width: 60%;" id="start-btn">
+            <div>
+        </section>
+
+        <section id="instruction-screen">
+            <h2 style="color: #FFFFFF; font-family: GOTHAMBOLD; padding: 60px 0px 50px">How To Play: </h2>
+            <img src="assets/1x/2.instruction.png" style="width: 80%;">
+            <input type="image" src="assets/1x/2.btn-continue.png" style="width: 60%; padding-top: 20vh" id="continue-btn">
+        </section>
+
+        <section id="bonus-screen">
+            <img src="assets/1x/3.title.png" style="width: 300px; padding: 70px 0px 50px"> 
+            <img src="assets/1x/3.bonuspoint.png" style="width: 250px; padding-bottom: 50px;"> 
+            <h4 style="color: #FFFFFF; font-family: GOTHAMBOLD;">Each of this icon can get</h4>
+            <h2 style="color: #FFFFFF; font-family: GOTHAMBOLD; padding-bottom: 15px;">10 POINTS.</h2>
+            <img src="assets/1x/3.dont-miss-out.png" style="width: 300px; padding-bottom: 60px;">
+            <input type="image" src="assets/1x/2.btn-continue.png" style="width: 60%;" id="continueGame-btn">
+        </section>
+
+        <section id="game-screen">
+            <canvas id="game-canvas"></canvas>
+        </section>
+
+        <section id="score-screen">
+            <div class="container">
+                <img src='assets/1x/4.ending-score-box.png' style="width:80%; padding-top: 225px; padding-bottom: 150px; background: no-repeat; background-size: 100%;" id="score-box"> 
+                <h2 class="centered">YOUR SCORE: </h2>
+                <h1 class="centered" style="padding-top: 150px;" id="newScore"></h1>
             </div>
-        </div>
+            <input type="image" src="assets/1x/4.btn-play-again.png" style="width: 60% " id="playagain-btn"> 
+        </section>
     </div>
 
     <script src="./import_files/jquery.min.js" type="text/javascript"></script>
-    <script src="./import_files/bootstrap.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script>
         // http://paulirish.com/2011/requestanimationframe-for-smart-animating
         // shim layer with setTimeout fallback
@@ -136,33 +130,39 @@
         })(); 
 
         $("#start-btn").click(function () {
-            $("#welcome-screen").addClass('d-none'); 
-            $("#instruction-screen").removeClass('d-none'); 
+            console.log("Start"); 
+            $("#welcome-screen").hide(); 
+            $("#instruction-screen").show(); 
         }); 
 
         $("#continue-btn").click(function () {
-            $("#instruction-screen").addClass('d-none'); 
-            $("#bonus-screen").removeClass('d-none'); 
+            console.log("CONTINUE"); 
+            $("#instruction-screen").hide(); 
+            $("#bonus-screen").show(); 
         }); 
 
         $("#continueGame-btn").click(function () {
-            $("#bonus-screen").addClass('d-none'); 
+            $("#bonus-screen").hide(); 
+            console.log("CONTINUE GAME"); 
             LOCAT.init();
-            $("#game-screen").removeClass('d-none'); 
+            console.log("INIT DONE"); 
+            LOCAT.resize();  
+            console.log("RESIZE DONE"); 
+            $("#game-screen").show(); 
         }); 
 
         $("#playagain-btn").click(function () {
-            $("#score-screen").addClass('d-none'); 
-            $("#welcome-screen").removeClass('d-none'); 
+            $("#score-screen").hide(); 
+            $("#welcome-screen").show(); 
         }); 
 
         // namespace our game
         var LOCAT = {
-            WIDTH: 320, 
-            HEIGHT: 480, 
+            WIDTH: 500, 
+            HEIGHT: 981, 
             scale: 1, 
             // the position of the canvas in relation to the screen
-            offset: {top: 0, left: 0, width: 0}, 
+            offset: {top: 0, left: 0}, 
             nextLogo: 100, 
             startingTime: 30000, 
             score: {
@@ -179,9 +179,6 @@
             canvas: null, 
             ctx: null, 
             background: null, 
-            ua: null,
-            android: null,
-            ios: null,
             /**
             preventDefaultInput: function(e) {
                 e.preventDefault(); 
@@ -225,8 +222,6 @@
             init: function() {
                 // the proportion of width to height
                 LOCAT.RATIO = LOCAT.WIDTH / LOCAT.HEIGHT; 
-                // the proportion of height to width
-                // LOCAT.RATIO = LOCAT.HEIGHT / LOCAT.WIDTH; 
                 // these will change when the screen is resized
                 LOCAT.currentWidth = LOCAT.WIDTH; 
                 LOCAT.currentHeight = LOCAT.HEIGHT; 
@@ -240,12 +235,9 @@
                 // the canvas context enables us to 
                 // interact with the canvas api  
                 LOCAT.ctx = LOCAT.canvas.getContext('2d'); 
-                // we need to sniff out android & ios
-                // so we can hide the address bar in
-                // our resize function
-                LOCAT.ua = navigator.userAgent.toLowerCase();
-                LOCAT.android = LOCAT.ua.indexOf('android') > -1 ? true : false;
-                LOCAT.ios = (LOCAT.ua.indexOf('iphone') > -1 || LOCAT.ua.indexOf('ipad') > -1) ? true : false;
+                LOCAT.wave = {
+                    offset: 0
+                }; 
 
                 var good1 = new Image(); 
                 good1.src = './assets/1x/2.healthyfoods-1.png'; 
@@ -289,7 +281,7 @@
                     // but prevent default behaviour
                     // so the screen doesn't scroll
                     // or zoom
-                    // e.preventDefault();
+                    e.preventDefault();
                 }, false);
                 window.addEventListener('touchend', function (e) {
                     // as above
@@ -302,42 +294,6 @@
                 // we're ready to resize 
                 LOCAT.resize(); 
                 LOCAT.loop(); 
-            }, 
-
-            resize: function() {
-                var testDiv = document.getElementById("main-container");
-                LOCAT.offset.left = testDiv.offsetLeft;
-                LOCAT.currentWidth = window.innerWidth - 2*LOCAT.offset.left; 
-                // resize the width in proportion 
-                // to the new height
-                LOCAT.currentHeight = LOCAT.currentWidth / LOCAT.RATIO; 
-
-                // this will create some extra space on the page 
-                // allowing us to scroll past the address bar, 
-                // thus hiding it. 
-                // if (LOCAT.android || LOCAT.ios) {
-                //    document.body.style.height = (window.innerHeight + 50) + 'px'; 
-                // }
-
-                // set the new canvas style width and height 
-                // note: our canvas is still 320 x 480, but 
-                // we're essentially scaling it with CSS 
-                LOCAT.canvas.style.width = (LOCAT.currentWidth) + 'px'; 
-                LOCAT.canvas.style.height = (LOCAT.currentHeight) + 'px'; 
-
-                LOCAT.scale = LOCAT.currentWidth / LOCAT.WIDTH; 
-                // var testCanvas = document.getElementById("game-canvas");
-                remainingHeight = $('#main-container').height();
-                scoreTimeFieldHeight = $('#score-time-field').height(); 
-                LOCAT.offset.top = ((remainingHeight - LOCAT.currentHeight)/2)-scoreTimeFieldHeight; 
-                LOCAT.offset.left = testDiv.offsetLeft;
-                //LOCAT.offset.left = LOCAT.canvas.offsetLeft; 
-
-                // we use a timeout here because some mobile 
-                // browsers don't fire if there is not a short delay 
-                window.setTimeout(function() {
-                    window.scrollTo(0,1); 
-                }, 1); 
             }, 
 
             update: function() {
@@ -360,9 +316,6 @@
                 // spawn a new instance of Touch 
                 // if the user has tapped the screen 
                 if (LOCAT.Input.tapped) {
-                    // keep track of taps; needed to 
-                    // calculate accuracy
-                    LOCAT.score.taps += 1;
                     // add a new touch
                     LOCAT.entities.push(new LOCAT.Touch(LOCAT.Input.x, LOCAT.Input.y)); 
                     // set tapped back to false 
@@ -375,8 +328,6 @@
                 // cycle through all entities and update as necessary 
                 for (i = 0; i < LOCAT.entities.length; i += 1) {
                     LOCAT.entities[i].update(); 
-                    // LOCAT.correctSound.stop(); 
-                    // LOCAT.wrongSound.stop(); 
 
                     if (LOCAT.entities[i].type === 'logo') {
                         LOCAT.entities[i].elapsedTime += (1000/60)/1000; 
@@ -430,11 +381,8 @@
                     LOCAT.entities[i].render(); 
                 }
 
-
-                LOCAT.updateScoreField(); 
-                LOCAT.updateTimeField(); 
-                //LOCAT.Draw.text('SCORE: ' + LOCAT.score.hit, 20, 30, 14, '#fff');
-                //LOCAT.Draw.text('TIME: ' + (Math.floor(LOCAT.startingTime/1000)), (LOCAT.WIDTH-150), 30, 14, '#fff'); 
+                LOCAT.Draw.text('SCORE: ' + LOCAT.score.hit, 20, 30, 14, '#fff');
+                LOCAT.Draw.text('TIME: ' + (Math.floor(LOCAT.startingTime/1000)), (LOCAT.WIDTH-150), 30, 14, '#fff'); 
             }, 
 
             // the actual loop 
@@ -451,26 +399,50 @@
                 else { 
                     cancelAnimationFrame(stopId); 
                     // LOCAT.configureInput(); 
-                    $("#game-screen").addClass('d-none'); 
+                    $("#game-screen").hide(); 
                     scoreUpdate(); 
-                    $("#score-screen").removeClass('d-none'); 
-                    LOCAT.reinitialize(); 
+                    $("#score-screen").show(); 
+                    LOCAT.initialize(); 
                 }
             }, 
+            
+            resize: function() {
+                LOCAT.currentHeight = window.innerHeight; 
+                // resize the width in proportion 
+                // to the new height
+                LOCAT.currentWidth = LOCAT.currentHeight * LOCAT.RATIO; 
 
-            reinitialize: function() {
+                // this will create some extra space on the page 
+                // allowing us to scroll past the address bar, 
+                // thus hiding it. 
+                //if (LOCAT.android || LOCAT.ios) {
+                //    document.body.style.height = (window.innerHeight + 50) + 'px'; 
+                //}
+
+                // set the new canvas style width and height 
+                // note: our canvas is still 320 x 480, but 
+                // we're essentially scaling it with CSS 
+                LOCAT.canvas.style.width = LOCAT.currentWidth + 'px'; 
+                LOCAT.canvas.style.height = LOCAT.currentHeight + 'px'; 
+
+                LOCAT.scale = LOCAT.currentWidth / LOCAT.WIDTH; 
+                LOCAT.offset.top = LOCAT.canvas.offsetTop; 
+                var testDiv = document.getElementById("main-container");
+                LOCAT.offset.left = testDiv.offsetLeft;
+                // LOCAT.offset.left = LOCAT.canvas.offsetLeft; 
+
+                // we use a timeout here because some mobile 
+                // browsers don't fire if there is not a short delay 
+                window.setTimeout(function() {
+                    window.scrollTo(0,1); 
+                }, 1); 
+            }, 
+
+            initialize: function () {
                 LOCAT.startingTime = 30000; 
                 LOCAT.score.hit = 0; 
                 LOCAT.entities = []; 
-            }, 
-
-            updateScoreField: function() {
-                document.getElementById("scoreField").innerHTML = LOCAT.score.hit; 
-            }, 
-
-            updateTimeField: function() {
-                document.getElementById("timeField").innerHTML = Math.ceil(LOCAT.startingTime/1000); 
-            }, 
+            }
         }; 
 
         LOCAT.collides = function(a, b) {
@@ -491,15 +463,25 @@
                 LOCAT.ctx.clearRect(0, 0, LOCAT.WIDTH, LOCAT.HEIGHT); 
             }, 
 
-            logo: function (img, x, y, r) {
-                LOCAT.ctx.drawImage(img, x, y, 2*r, 2*r); 
+            text: function (string, x, y, size, color) {
+                LOCAT.ctx.font = 'bold ' + size + 'px Monospace'; 
+                LOCAT.ctx.fillStyle = color; 
+                LOCAT.ctx.fillText(string, x, y); 
+            },
+
+            logo: function (x,y,img) {
+                LOCAT.ctx.drawImage(img, x, y, 80, 80); 
             }, 
-            /*
+            
+            bg: function (bg) {
+                LOCAT.ctx.drawImage(bg, 0, 0, LOCAT.WIDTH, LOCAT.HEIGHT); 
+            }, 
+
             rect: function(x, y, w, h, col) {
                 LOCAT.ctx.fillStyle = col;
                 LOCAT.ctx.fillRect(x, y, w, h);
             },
-            */
+
             circle: function(x, y, r, col) {
                 LOCAT.ctx.fillStyle = col;
                 LOCAT.ctx.beginPath();
@@ -510,8 +492,9 @@
         }; 
 
         function scoreUpdate() {
-            document.getElementById("finalScore").innerHTML = LOCAT.score.hit; 
+            document.getElementById("newScore").innerHTML = LOCAT.score.hit; 
             var score = LOCAT.score.hit; 
+            
             $.ajax({
                 url: "populateData.php", 
                 type: "POST", 
@@ -551,12 +534,12 @@
                 //    offsetLeft = LOCAT.canvas.offsetLeft, 
                 //    scale = LOCAT.currentWidth / LOCAT.WIDTH;  
                 
-                this.x = ((data.pageX - LOCAT.offset.left) / LOCAT.scale);
+                this.x = (data.pageX - LOCAT.offset.left - 25) / LOCAT.scale ;
                 // console.log("x = "+ this.x); 
                 // console.log("data.pageX = " + data.pageX); 
                 // console.log("LOCAT.offset.left = " + LOCAT.offset.left);
                 // console.log("LOCAT.scale = " + LOCAT.scale); 
-                this.y = ((data.pageY - LOCAT.offset.top) / LOCAT.scale);  
+                this.y = (data.pageY - LOCAT.offset.top - 25) / LOCAT.scale ;  
                 this.tapped = true;
             }
         }; 
@@ -565,7 +548,7 @@
             this.type = 'touch';    // we'll need this later 
             this.x = x;             // the x coordinate 
             this.y = y;             // the y coordinate 
-            this.r = 5;             // the radius 
+            this.r = 10;             // the radius 
             this.opacity = 1;       // initial opacity; the dot will fade out 
             this.fade = 0.05;       // amount by which to fade on each game tick 
             this.remove = false;    // flag for removing this entity. LOCAT.update 
@@ -579,63 +562,54 @@
             }; 
 
             this.render =function() {
-                LOCAT.Draw.circle(this.x, this.y, this.r, 'rgba(255, 0, 0, '+this.opacity+')');
+                // LOCAT.Draw.circle(this.x, this.y, this.r, 'rgba(255, 0, 0, '+this.opacity+')');
             }; 
         }; 
 
-        function getRandomInteger(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min; 
-        }
-
         LOCAT.Logo = function() {
             this.type = 'logo'; 
-            this.r = 30; // (Math.random() * 20) + 10;
+            this.r = 40; // (Math.random() * 20) + 10;
             // console.log(this.r); 
             this.elapsedTime = 0; 
-            /*
-            this.x = (Math.random() * (LOCAT.WIDTH));
-            console.log(LOCAT.WIDTH); 
-            this.y = (Math.random() * (LOCAT.HEIGHT));// LOCAT.HEIGHT + (Math.random() * 100) + 100;
-            */
-            
-            this.x = getRandomInteger(this.r, LOCAT.currentWidth-4*this.r);
-            this.y = getRandomInteger(this.r, LOCAT.currentHeight-5*this.r);  
-            // console.log("x, y: " + this.x + ", " + this.y);
+
+            this.x = (Math.random() * (LOCAT.WIDTH) - this.r);
+            this.y = (Math.random() * (LOCAT.HEIGHT) - this.r);// LOCAT.HEIGHT + (Math.random() * 100) + 100;
 
             this.remove = false; 
-            /**
-            while (true) {
-                var hit = 0;
-                for (var i = 0; i < LOCAT.entities.length; i++) {
-                    if (LOCAT.entities[i].type === 'logo') {
-                        var logo = LOCAT.entities[i]; 
-                        var dx = this.x - logo.x; 
-                        var dy = this.y - logo.y; 
-                        var rr = this.r + logo.r; 
-                        if (dx * dx + dy * dy < rr * rr) {
-                            hit++; 
-                        }
-                    }
-                    if (hit == 0) {
-                        break; 
-                    }
-                }
-            this.x = getRandomInteger(this.r, LOCAT.currentWidth-4*this.r);
-            this.y = getRandomInteger(this.r, LOCAT.currentHeight-5*this.r);  
-            }; 
-            **/ 
+
             this.update = function() {
+                // a sine wave is commonly a function of time
+                // var elapsedTime = new Date();
+                // elapsedTime.setSeconds(3); 
+                // this.y -= this.speed;
+                // the x coord to follow a sine wave
+                // consider 
+                // this.x = this.waveSize * Math.sin(time) + this.xConstant;
+
+                /*
+                // if offscreen flag for removal
+                if (this.y < -10) {
+                    // LOCAT.score.escaped += 1; // update score
+                    this.remove = true;
+                }*/ 
+                // this.elapsedTime += 1; 
+                // $seconds = document.querySelector('#countdown');
+                
+                // console.log("time elapsed " + this.elapsedTime + " seconds"); 
+                //if(this.elapsedTime++ < 3) setTimeout(countdown, 1000)
                 if (this.elapsedTime >= 2) {
                     this.remove = true; 
                 }
-            };
 
+                
+            };
+            
             var imgIndex = Math.floor(Math.random() * logos.length); 
             this.imgIndex = imgIndex; 
             var tmpImg = logos[imgIndex]; 
 
             this.render = function() {
-                LOCAT.Draw.logo(tmpImg, this.x, this.y, this.r); 
+                LOCAT.Draw.logo(this.x, this.y, tmpImg); 
             }; 
         };  
 
